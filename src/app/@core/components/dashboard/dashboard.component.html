@@ -150,7 +150,12 @@
             <img src="assets/images/dashboard/conference.jpg" alt="Shoes" />
           </figure> -->
           <div class="card-body text-center">
-            <h2 class="card-title">{{joiningMeetType | uppercase}} MEET</h2>
+            <div class="flex flex-row justify-between">
+              <button type="button" class="btn btn-sm btn-primary" (click)="meetType = ''">
+                <strong>Back</strong>
+              </button>
+              <h2 class="card-title">{{joiningMeetType | uppercase}} MEET</h2>
+            </div>
 
             <label class="form-control w-full max-w-xs w-100">
               <div class="label">
