@@ -92,9 +92,12 @@ export class DashboardComponent implements OnInit {
 
   joinMeet() {
     debugger
-    if(this.checkIsMeet_Exist(this.joiningUserDetail.MeetCode) && this._meetingServices.checkUserCount_InMeeting(this.joiningUserDetail.MeetCode)){
+
+    if (this.verifyMeetTimeDate(this.joiningUserDetail.MeetCode) && this.checkIsMeet_Exist(this.joiningUserDetail.MeetCode) && this._meetingServices.checkUserCount_InMeeting(this.joiningUserDetail.MeetCode)) {
       this._meetingServices.joinMeet(this.joiningUserDetail);
       this._router.navigate(['meeting'], { queryParams: { meetId: this.joiningUserDetail.MeetCode, userId: this.joiningUserDetail.ConatctNo } })
+    } else {
+      alert('Please check meeting date time!');
     }
 
   }
@@ -154,7 +157,52 @@ export class DashboardComponent implements OnInit {
   }
 
   navigate_MeetingScreen() {
-    this._router.navigate(['meeting'], { queryParams: { meetId: this.newMeetGeneratedCode } })
+
+    if (this.verifyMeetTimeDate(this.newMeetGeneratedCode)) {
+      let _user: any = localStorage.getItem('user') || '';
+      if (_user) {
+        _user = JSON.parse(_user);
+        this.joiningUserDetail = new UserDetail();
+        this.joiningUserDetail.ConatctNo = _user.EmailAddress;
+        this.joiningUserDetail.FirstName = _user.FirstName;
+        this.joiningUserDetail.LastName = _user.LastName;
+        this.joiningUserDetail.MeetCode = this.newMeetGeneratedCode;
+        this._meetingServices.joinMeet(this.joiningUserDetail);
+        this._router.navigate(['meeting'], { queryParams: { meetId: this.newMeetGeneratedCode, userId: this.joiningUserDetail.ConatctNo } })
+      }
+      else {
+        alert('Please try agin after few min..!');
+      }
+    } else {
+      alert('Please check meeting date time!');
+    }
+
+  }
+
+  verifyMeetTimeDate(_meetCode: string) {
+    let _res: boolean = false;
+    let meetDetail = null;
+    meetDetail = this._meetingServices.getMeetDetailsByMeetCode(_meetCode);
+    let _currentDate: any = new Date();
+    // let _currentHr: number = 0;
+    // let _currentMin: number = 0;
+    // _currentHr = _currentDate.getHours() || 0;
+    // _currentMin = _currentDate.getMinutes() || 0;
+    // _currentDate = (_currentDate.getFullYear() + '-' + (_currentDate.getMonth() + 1) + '-' + _currentDate.getDate()).toString() || '';
+    debugger
+    if (meetDetail && _currentDate) {
+      let _meetDate = meetDetail.MeetDateTime || '';
+      // let
+      if (_meetDate) {
+        _meetDate = new Date(_meetDate);
+
+        if (_currentDate >= _meetDate) {
+          _res = true;
+        }
+
+      }
+    }
+    return _res;
   }
 
   reset() {

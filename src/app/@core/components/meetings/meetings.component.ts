@@ -53,4 +53,11 @@ export class MeetingsComponent implements OnInit {
       }
     }
   }
+
+  leaveMeeting(){
+    // localStorage.removeItem('user');
+    this._router.navigate(['dashboard']);
+  }
+
+
 }
